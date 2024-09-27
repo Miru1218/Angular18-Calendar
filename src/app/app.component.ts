@@ -16,7 +16,7 @@ export class AppComponent {
   ngOnInit() {
     this.items = [
       {
-        label: 'Home',
+        label: '預設',
         icon: 'pi pi-home',
         command: () => (this.router.navigate(['']))
       },
