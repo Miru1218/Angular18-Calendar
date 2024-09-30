@@ -17,8 +17,11 @@ export class AppComponent {
     this.items = [
       {
         label: '預設',
-        icon: 'pi pi-home',
         command: () => (this.router.navigate(['']))
+      },
+      {
+        label: '修改月份樣式',
+        command: () => (this.router.navigate(['ModifyMonthStyle']))
       },
     ]
   }
