@@ -36,6 +36,7 @@ import { DialogModule } from 'primeng/dialog';
 import { TableModule } from 'primeng/table';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
+import { ModifyMonthStyleService } from './service/modify-month-style.service';
 
 const colors: Record<string, EventColor> = {
   red: {
@@ -58,7 +59,7 @@ registerLocaleData(localeFr);//法語
 @Component({
   selector: 'app-modify-month-style',
   standalone: true,
-  imports: [RouterOutlet,
+  imports: [
     CommonModule,
     DialogModule,
     FormsModule,
@@ -66,7 +67,8 @@ registerLocaleData(localeFr);//法語
     ButtonModule,
     TableModule,
     AngularCalendarModule,
-    PrimeNgCalendarModule],
+    PrimeNgCalendarModule
+  ],
   templateUrl: './modify-month-style.component.html',
   styleUrl: './modify-month-style.component.scss'
 })
@@ -91,7 +93,47 @@ export class ModifyMonthStyleComponent implements OnInit, OnDestroy {
 
   private destroy$ = new Subject<void>();
 
+  activeDayIsOpen: boolean = true;
+
+  events: CalendarEvent[] = [];
+
+  actions: CalendarEventAction[] = [
+    {
+      label: '<i class="pi pi-pencil"></i>',
+      a11yLabel: 'Edit',
+      onClick: ({ event }: { event: CalendarEvent }): void => {
+        console.log('Edit action clicked', event);
+        this.handleEvent('Edited', event);
+      },
+    },
+    {
+      label: '<i class="pi pi-trash"></i>',
+      a11yLabel: 'Delete',
+      onClick: ({ event }: { event: CalendarEvent }): void => {
+        console.log('del action clicked', event);
+        this.events = this.events.filter((iEvent) => iEvent !== event);
+        this.deleteEvent(event);
+      },
+    },
+  ];
+
+  constructor(
+    private breakpointObserver: BreakpointObserver,
+    private cd: ChangeDetectorRef,
+    private modifyMonthStyleService: ModifyMonthStyleService
+  ) { }
+
   ngOnInit() {
+
+    this.modifyMonthStyleService.getEvents().subscribe(events => {
+      this.events = events.map((item: any) => {
+        return {
+          ...item,
+          actions: this.actions,
+        }
+      });
+      console.log(events);
+    });
 
     const CALENDAR_RESPONSIVE = {
       small: {
@@ -141,73 +183,6 @@ export class ModifyMonthStyleComponent implements OnInit, OnDestroy {
       end: new Date()
     };
 
-  actions: CalendarEventAction[] = [
-    {
-      label: '<i class="pi pi-pencil"></i>',
-      a11yLabel: 'Edit',
-      onClick: ({ event }: { event: CalendarEvent }): void => {
-        this.handleEvent('Edited', event);
-      },
-    },
-    {
-      label: '<i class="pi pi-trash"></i>',
-      a11yLabel: 'Delete',
-      onClick: ({ event }: { event: CalendarEvent }): void => {
-        this.events = this.events.filter((iEvent) => iEvent !== event);
-        this.deleteEvent(event);
-      },
-    },
-  ];
-
-  events: CalendarEvent[] = [
-    {
-      start: subDays(startOfDay(new Date()), 1),
-      end: addDays(new Date(), 1),
-      title: 'A 3 day event',
-      color: { ...colors['red'] },
-      actions: this.actions,
-      allDay: true,
-      resizable: {
-        beforeStart: true,
-        afterEnd: true,
-      },
-      draggable: true,
-    },
-    {
-      start: startOfDay(new Date()),
-      title: 'An event with no end date',
-      color: { ...colors['yellow'] },
-      actions: this.actions,
-      draggable: true,
-    },
-    {
-      start: subDays(endOfMonth(new Date()), 3),
-      end: addDays(endOfMonth(new Date()), 3),
-      title: 'A long event that spans 2 months',
-      color: { ...colors['blue'] },
-      allDay: true,
-      actions: this.actions,
-      draggable: true,
-    },
-    {
-      start: addHours(startOfDay(new Date()), 2),
-      end: addHours(new Date(), 2),
-      title: 'A draggable and resizable event',
-      color: { ...colors['yellow'] },
-      actions: this.actions,
-      resizable: {
-        beforeStart: true,
-        afterEnd: true,
-      },
-      draggable: true,
-    },
-  ];
-
-  activeDayIsOpen: boolean = true;
-
-  constructor(private breakpointObserver: BreakpointObserver,
-    private cd: ChangeDetectorRef) { }
-
   dayClicked({ date, events }: { date: Date; events: CalendarEvent[] }): void {
     if (isSameMonth(date, this.viewDate)) {
       if (
@@ -238,11 +213,12 @@ export class ModifyMonthStyleComponent implements OnInit, OnDestroy {
       event,
       action,
       title: event.title,
-      start: event.start || new Date(), // 使用默認日期
-      end: event.end || new Date() // 使用默認日期
+      start: event.start || new Date(),
+      end: event.end || new Date()
     };
     this.displayModal = true;
   }
+
   addEvent(): void {
     this.events = [
       ...this.events,
@@ -251,6 +227,7 @@ export class ModifyMonthStyleComponent implements OnInit, OnDestroy {
         start: startOfDay(new Date()),
         end: endOfDay(new Date()),
         color: colors['red'],
+        actions: this.actions,
         draggable: true,
         resizable: {
           beforeStart: true,
@@ -267,9 +244,9 @@ export class ModifyMonthStyleComponent implements OnInit, OnDestroy {
         eventToUpdate.title = this.modalData.title;
         eventToUpdate.start = this.modalData.start;
         eventToUpdate.end = this.modalData.end;
-        this.refresh.next(); // 刷新顯示
+        this.refresh.next();
       }
-      this.displayModal = false; // 關閉對話框
+      this.displayModal = false;
     }
   }
 

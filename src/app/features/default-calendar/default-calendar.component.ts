@@ -50,7 +50,7 @@ const colors: Record<string, EventColor> = {
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [RouterOutlet,
+  imports: [
     CommonModule,
     DialogModule,
     FormsModule,

@@ -1,3 +1,5 @@
+<h3 class="text-red-500">程式碼位置：/src/app/features/modify-month-style</h3>
+
 <div class="grid text-center">
   <div class="col-12 md:col-4">
     <div class="flex justify-content-center gap-2">
@@ -94,7 +96,7 @@
   [(visible)]="displayModal"
   [modal]="true"
   [style]="{ width: '40vw', height: '90vh' }"
-  [header]="modalData?.action || '編輯事件'"
+  [header]="modalData.action || '編輯事件'"
   [draggable]="false"
 >
   <ng-template pTemplate="body">

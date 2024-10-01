@@ -23,6 +23,19 @@ export class AppComponent {
         label: '修改月份樣式',
         command: () => (this.router.navigate(['ModifyMonthStyle']))
       },
+      {
+        label: '行事曆',
+        items: [
+          {
+            label: '基礎行事曆畫面',
+            command: () => (this.router.navigate(['Base']))
+          },
+          {
+            label: '切換月份',
+            command: () => (this.router.navigate(['MonthNavigation']))
+          },
+        ]
+      },
     ]
   }
 }
