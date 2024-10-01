@@ -1,0 +1,91 @@
+[
+    {
+        "start": "2024-09-29T16:00:00.000Z",
+        "end": "2024-10-02T05:43:59.422Z",
+        "title": "A 3 day event",
+        "color": {
+            "primary": "#ad2121",
+            "secondary": "#FAE3E3"
+        },
+        "actions": [
+            {
+                "label": "<i class=\"pi pi-pencil\"></i>",
+                "a11yLabel": "Edit"
+            },
+            {
+                "label": "<i class=\"pi pi-trash\"></i>",
+                "a11yLabel": "Delete"
+            }
+        ],
+        "allDay": true,
+        "resizable": {
+            "beforeStart": true,
+            "afterEnd": true
+        },
+        "draggable": true
+    },
+    {
+        "start": "2024-09-30T16:00:00.000Z",
+        "title": "An event with no end date",
+        "color": {
+            "primary": "#e3bc08",
+            "secondary": "#FDF1BA"
+        },
+        "actions": [
+            {
+                "label": "<i class=\"pi pi-pencil\"></i>",
+                "a11yLabel": "Edit"
+            },
+            {
+                "label": "<i class=\"pi pi-trash\"></i>",
+                "a11yLabel": "Delete"
+            }
+        ],
+        "draggable": true
+    },
+    {
+        "start": "2024-10-28T15:59:59.999Z",
+        "end": "2024-11-03T15:59:59.999Z",
+        "title": "A long event that spans 2 months",
+        "color": {
+            "primary": "#1e90ff",
+            "secondary": "#D1E8FF"
+        },
+        "allDay": true,
+        "actions": [
+            {
+                "label": "<i class=\"pi pi-pencil\"></i>",
+                "a11yLabel": "Edit"
+            },
+            {
+                "label": "<i class=\"pi pi-trash\"></i>",
+                "a11yLabel": "Delete"
+            }
+        ],
+        "draggable": true
+    },
+    {
+        "start": "2024-09-30T18:00:00.000Z",
+        "end": "2024-10-01T07:43:59.422Z",
+        "title": "A draggable and resizable event",
+        "color": {
+            "primary": "#e3bc08",
+            "secondary": "#FDF1BA"
+        },
+        "actions": [
+            {
+                "label": "<i class=\"pi pi-pencil\"></i>",
+                "a11yLabel": "Edit"
+            },
+            {
+                "label": "<i class=\"pi pi-trash\"></i>",
+                "a11yLabel": "Delete"
+            }
+        ],
+        "resizable": {
+            "beforeStart": true,
+            "afterEnd": true
+        },
+        "draggable": true
+    }
+]
