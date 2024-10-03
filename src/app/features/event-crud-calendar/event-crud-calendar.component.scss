@@ -1,0 +1,4 @@
+// 蓋掉 p-table 預設樣式
+::ng-deep .p-datatable > .p-datatable-wrapper {
+    overflow: visible ;
+}

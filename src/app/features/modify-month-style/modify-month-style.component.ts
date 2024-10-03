@@ -1,6 +1,7 @@
 
 import localeFr from '@angular/common/locales/fr';
 import localeZhHant from '@angular/common/locales/zh-Hant';
+import localeEn from '@angular/common/locales/en';
 
 import { BreakpointObserver, BreakpointState } from '@angular/cdk/layout';
 import { ChangeDetectorRef, Component, OnDestroy, OnInit } from '@angular/core';
@@ -55,6 +56,7 @@ const colors: Record<string, EventColor> = {
 
 registerLocaleData(localeZhHant, 'zh-Hant');//繁體中文
 registerLocaleData(localeFr);//法語
+registerLocaleData(localeEn, 'en-US');//英文
 
 @Component({
   selector: 'app-modify-month-style',
@@ -75,7 +77,7 @@ registerLocaleData(localeFr);//法語
 export class ModifyMonthStyleComponent implements OnInit, OnDestroy {
   @ViewChild('modalContent', { static: true }) modalContent: TemplateRef<any> | undefined;
 
-  locale: string = 'zh-Hant';
+  locale: string = 'zh-Hant';// 預設語言為繁體中文
 
   displayModal: boolean = false;
 
@@ -89,6 +91,7 @@ export class ModifyMonthStyleComponent implements OnInit, OnDestroy {
 
   datetime12h: Date[] | undefined;
 
+  //更新標題、開始時間、結束時間
   refresh = new Subject<void>();
 
   private destroy$ = new Subject<void>();
@@ -96,6 +99,7 @@ export class ModifyMonthStyleComponent implements OnInit, OnDestroy {
   activeDayIsOpen: boolean = true;
 
   events: CalendarEvent[] = [];
+  
 
   actions: CalendarEventAction[] = [
     {
@@ -229,10 +233,10 @@ export class ModifyMonthStyleComponent implements OnInit, OnDestroy {
         color: colors['red'],
         actions: this.actions,
         draggable: true,
-        resizable: {
-          beforeStart: true,
-          afterEnd: true,
-        },
+        // resizable: {
+        //   beforeStart: true,
+        //   afterEnd: true,
+        // },
       },
     ];
   }
@@ -250,6 +254,20 @@ export class ModifyMonthStyleComponent implements OnInit, OnDestroy {
     }
   }
 
+  //切換語言
+  toggleLanguage() {
+    if (this.locale === 'zh-Hant') {
+      this.locale = 'fr'; // 切換到法語
+      registerLocaleData(localeFr, 'fr');
+    } else if (this.locale === 'fr') {
+      this.locale = 'en-US'; // 切換到英文
+      registerLocaleData(localeEn, 'en-US');
+    } else {
+      this.locale = 'zh-Hant'; // 切換回繁體中文
+      registerLocaleData(localeZhHant, 'zh-Hant');
+    }
+  }
+
   deleteEvent(eventToDelete: CalendarEvent) {
     this.events = this.events.filter((event) => event !== eventToDelete);
   }
@@ -258,6 +276,7 @@ export class ModifyMonthStyleComponent implements OnInit, OnDestroy {
     this.view = view;
   }
 
+  //關閉顯示行程
   closeOpenMonthViewDay() {
     this.activeDayIsOpen = false;
   }

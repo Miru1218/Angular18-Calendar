@@ -132,10 +132,10 @@ export class DefaultCalendarComponent {
       title: 'A draggable and resizable event',
       color: { ...colors['yellow'] },
       actions: this.actions,
-      resizable: {
-        beforeStart: true,
-        afterEnd: true,
-      },
+      // resizable: {
+      //   beforeStart: true,
+      //   afterEnd: true,
+      // },
       draggable: true,
     },
   ];

@@ -34,6 +34,18 @@ export class AppComponent {
             label: '切換月份',
             command: () => (this.router.navigate(['MonthNavigation']))
           },
+          {
+            label: '切換視圖模式',
+            command: () => (this.router.navigate(['ViewModeSwitcher']))
+          },
+          {
+            label: '切換語言',
+            command: () => (this.router.navigate(['LanguageSwitcher']))
+          },
+          {
+            label: '行事曆CRUD',
+            command: () => (this.router.navigate(['EventCRUDCalendar']))
+          },
         ]
       },
     ]

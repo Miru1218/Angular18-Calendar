@@ -1,5 +1,7 @@
 <div class="grid">
-  <h3 class="text-red-500">程式碼位置：/src/app/features/modify-month-style</h3>
+  <h3 class="text-red-500">
+    程式碼位置：/src/app/features/src/app/features/language-switcher
+  </h3>
 
   <button pButton (click)="toggleLanguage()">
     {{
@@ -21,7 +23,6 @@
         mwlCalendarPreviousView
         [view]="view"
         [(viewDate)]="viewDate"
-        (viewDateChange)="closeOpenMonthViewDay()"
         class="p-button-primary"
       ></button>
       <button
@@ -37,7 +38,6 @@
         mwlCalendarNextView
         [view]="view"
         [(viewDate)]="viewDate"
-        (viewDateChange)="closeOpenMonthViewDay()"
         class="p-button-primary"
       ></button>
     </div>
@@ -79,14 +79,13 @@
     *ngSwitchCase="CalendarView.Month"
     [viewDate]="viewDate"
     [events]="events"
-    [activeDayIsOpen]="activeDayIsOpen"
     [refresh]="refresh"
+    [activeDayIsOpen]="activeDayIsOpen"
     (dayClicked)="dayClicked($event.day)"
     (eventClicked)="handleEvent('Clicked', $event.event)"
     (eventTimesChanged)="eventTimesChanged($event)"
     [locale]="locale"
   ></mwl-calendar-month-view>
-
   <mwl-calendar-week-view
     *ngSwitchCase="CalendarView.Week"
     [viewDate]="viewDate"
@@ -94,9 +93,7 @@
     [refresh]="refresh"
     (eventClicked)="handleEvent('Clicked', $event.event)"
     (eventTimesChanged)="eventTimesChanged($event)"
-    [daysInWeek]="daysInWeek"
   ></mwl-calendar-week-view>
-
   <mwl-calendar-day-view
     *ngSwitchCase="CalendarView.Day"
     [viewDate]="viewDate"

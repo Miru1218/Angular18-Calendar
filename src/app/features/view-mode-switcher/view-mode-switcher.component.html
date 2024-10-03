@@ -1,0 +1,74 @@
+<h3 class="text-red-500">程式碼位置：/src/app/features/view-mode-switcher</h3>
+
+<div class="grid text-center">
+  <div class="col-12 md:col-4">
+    <div class="flex justify-content-center gap-2">
+      <button
+        pButton
+        label="上個月"
+        mwlCalendarPreviousView
+        [view]="view"
+        [(viewDate)]="viewDate"
+        class="p-button-primary"
+      ></button>
+      <button
+        pButton
+        label="今天"
+        mwlCalendarToday
+        [(viewDate)]="viewDate"
+        class="p-button-outlined"
+      ></button>
+      <button
+        pButton
+        label="下個月"
+        mwlCalendarNextView
+        [view]="view"
+        [(viewDate)]="viewDate"
+        class="p-button-primary"
+      ></button>
+    </div>
+  </div>
+  <div class="col-12 md:col-4">
+    <h3>{{ viewDate | calendarDate : view + "ViewTitle" : "en" }}</h3>
+  </div>
+  <div class="col-12 md:col-4">
+    <div class="flex justify-content-center gap-2">
+      <button
+        pButton
+        label="Month"
+        (click)="setView(CalendarView.Month)"
+        [class.active]="view === CalendarView.Month"
+        class="p-button-primary"
+      ></button>
+      <button
+        pButton
+        label="Week"
+        (click)="setView(CalendarView.Week)"
+        [class.active]="view === CalendarView.Week"
+        class="p-button-primary"
+      ></button>
+      <button
+        pButton
+        label="Day"
+        (click)="setView(CalendarView.Day)"
+        [class.active]="view === CalendarView.Day"
+        class="p-button-primary"
+      ></button>
+    </div>
+  </div>
+</div>
+
+<div [ngSwitch]="view">
+  <mwl-calendar-month-view
+    *ngSwitchCase="CalendarView.Month"
+    [viewDate]="viewDate"
+  ></mwl-calendar-month-view>
+  <mwl-calendar-week-view
+    *ngSwitchCase="CalendarView.Week"
+    [viewDate]="viewDate"
+  ></mwl-calendar-week-view>
+  <mwl-calendar-day-view
+    *ngSwitchCase="CalendarView.Day"
+    [viewDate]="viewDate"
+  ></mwl-calendar-day-view>
+</div>
