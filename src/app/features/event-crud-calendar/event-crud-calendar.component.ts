@@ -25,10 +25,7 @@ import { InputTextModule } from 'primeng/inputtext';
 import { TableModule } from 'primeng/table';
 import { Subject } from 'rxjs';
 import { ModalData } from '../../shared/models/shared-calendar-event.model';
-
-registerLocaleData(localeZhHant, 'zh-Hant');//繁體中文
-registerLocaleData(localeFr);//法語
-registerLocaleData(localeEn, 'en-US');//英文
+import { SharedCalendarEventService } from '../../shared/service/shared-calendar-event.service';
 
 const colors: Record<string, EventColor> = {
   red: {
@@ -92,18 +89,12 @@ export class EventCRUDCalendarComponent {
     this.activeDayIsOpen = hasEventOnActiveDay; // 根據是否有事件來控制是否打開
   }
 
-  //切換語言
-  toggleLanguage() {
-    if (this.locale === 'zh-Hant') {
-      this.locale = 'fr'; // 切換到法語
-      registerLocaleData(localeFr, 'fr');
-    } else if (this.locale === 'fr') {
-      this.locale = 'en-US'; // 切換到英文
-      registerLocaleData(localeEn, 'en-US');
-    } else {
-      this.locale = 'zh-Hant'; // 切換回繁體中文
-      registerLocaleData(localeZhHant, 'zh-Hant');
-    }
+  constructor(
+    private sharedCalendarEventService: SharedCalendarEventService
+  ) { }
+
+  ngOnInit() {
+    this.onLocaleChange();
   }
 
   // 事件操作按鈕
@@ -210,6 +201,12 @@ export class EventCRUDCalendarComponent {
 
   deleteEvent(eventToDelete: CalendarEvent): void {
     this.events = this.events.filter((event) => event !== eventToDelete); // 刪除事件
+  }
+
+  onLocaleChange() {
+    this.sharedCalendarEventService.sessionItem$.subscribe(item => {
+      this.locale = item;
+    });
   }
 
 }
