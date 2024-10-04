@@ -22,7 +22,7 @@ export class BaseComponent {
   view: CalendarView = CalendarView.Month;
   // 套用CalendarView的設定
   CalendarView = CalendarView;
-  // 設定日曆的當前日期，預設為今天
+  // 設定日曆的當前日期，預設為Today
   viewDate: Date = new Date();
 
 }

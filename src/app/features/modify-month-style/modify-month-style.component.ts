@@ -34,10 +34,12 @@ import {
 import { ButtonModule } from 'primeng/button';
 import { CalendarModule as PrimeNgCalendarModule } from 'primeng/calendar';
 import { DialogModule } from 'primeng/dialog';
+import { InputTextModule } from 'primeng/inputtext';
 import { TableModule } from 'primeng/table';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { ModifyMonthStyleService } from './service/modify-month-style.service';
+import { ModalData } from '../../shared/models/shared-calendar-event.model';
 
 const colors: Record<string, EventColor> = {
   red: {
@@ -68,6 +70,7 @@ registerLocaleData(localeEn, 'en-US');//英文
     ReactiveFormsModule,
     ButtonModule,
     TableModule,
+    InputTextModule,
     AngularCalendarModule,
     PrimeNgCalendarModule
   ],
@@ -99,7 +102,7 @@ export class ModifyMonthStyleComponent implements OnInit, OnDestroy {
   activeDayIsOpen: boolean = true;
 
   events: CalendarEvent[] = [];
-  
+
 
   actions: CalendarEventAction[] = [
     {
@@ -173,19 +176,13 @@ export class ModifyMonthStyleComponent implements OnInit, OnDestroy {
 
   }
 
-  modalData: {
-    action: string;
-    event: CalendarEvent;
-    title: string;
-    start: Date;
-    end: Date;
-  } = {
-      action: '',
-      event: {} as CalendarEvent,
-      title: '',
-      start: new Date(),
-      end: new Date()
-    };
+  modalData: ModalData = {
+    action: '',
+    event: {} as CalendarEvent,
+    title: '',
+    start: new Date(),
+    end: new Date(),
+  };
 
   dayClicked({ date, events }: { date: Date; events: CalendarEvent[] }): void {
     if (isSameMonth(date, this.viewDate)) {

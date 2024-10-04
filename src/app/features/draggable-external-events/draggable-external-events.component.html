@@ -1,0 +1,276 @@
+<div class="grid">
+  <div class="col-2">
+    <p-card
+      mwlDroppable
+      (drop)="externalDrop($event.dropData.event)"
+      dragOverClass="drag-over"
+    >
+      <div class="card-body">
+        <p *ngIf="externalEvents.length === 0"><em>No events added</em></p>
+        <ul>
+          <li
+            *ngFor="let event of externalEvents"
+            mwlDraggable
+            [dropData]="{ event: event }"
+            [touchStartLongPress]="{ delay: 300, delta: 30 }"
+            dragActiveClass="drag-active"
+          >
+            <a href="javascript:;" [style.color]="event.color?.primary">
+              {{ event.title }}
+            </a>
+          </li>
+        </ul>
+      </div>
+    </p-card>
+  </div>
+
+  <div class="col-10">
+    <div class="grid">
+      <h3 class="text-red-500">
+        程式碼位置：/src/app/features/src/app/features/draggable-external-events
+      </h3>
+
+      <button pButton (click)="toggleLanguage()">
+        {{
+          locale === "zh-Hant"
+            ? "切換到法語"
+            : locale === "fr"
+            ? "切換到英文"
+            : "切換到繁體中文"
+        }}
+      </button>
+    </div>
+
+    <div class="grid text-center">
+      <div class="col-12 md:col-4">
+        <div class="flex justify-content-center gap-2">
+          <button
+            pButton
+            label="Previous"
+            mwlCalendarPreviousView
+            [view]="view"
+            [(viewDate)]="viewDate"
+            class="p-button-primary"
+          ></button>
+          <button
+            pButton
+            label="Today"
+            mwlCalendarToday
+            [(viewDate)]="viewDate"
+            class="p-button-outlined"
+          ></button>
+          <button
+            pButton
+            label="Next"
+            mwlCalendarNextView
+            [view]="view"
+            [(viewDate)]="viewDate"
+            class="p-button-primary"
+          ></button>
+        </div>
+      </div>
+
+      <div class="col-12 md:col-4">
+        <h3>{{ viewDate | calendarDate : view + "ViewTitle" : locale }}</h3>
+      </div>
+
+      <div class="col-12 md:col-4">
+        <div class="flex justify-content-center gap-2">
+          <button
+            pButton
+            label="Month"
+            (click)="setView(CalendarView.Month)"
+            [class.active]="view === CalendarView.Month"
+            class="p-button-primary"
+          ></button>
+          <button
+            pButton
+            label="Week"
+            (click)="setView(CalendarView.Week)"
+            [class.active]="view === CalendarView.Week"
+            class="p-button-primary"
+          ></button>
+          <button
+            pButton
+            label="Day"
+            (click)="setView(CalendarView.Day)"
+            [class.active]="view === CalendarView.Day"
+            class="p-button-primary"
+          ></button>
+        </div>
+      </div>
+    </div>
+
+    <div [ngSwitch]="view">
+      <mwl-calendar-month-view
+        *ngSwitchCase="CalendarView.Month"
+        [viewDate]="viewDate"
+        [events]="events"
+        [refresh]="refresh"
+        [activeDayIsOpen]="activeDayIsOpen"
+        (dayClicked)="dayClicked($event.day)"
+        (eventClicked)="handleEvent('Clicked', $event.event)"
+        (eventTimesChanged)="onEventTimesChanged($event)"
+        [locale]="locale"
+      ></mwl-calendar-month-view>
+      <mwl-calendar-week-view
+        *ngSwitchCase="CalendarView.Week"
+        [viewDate]="viewDate"
+        [events]="events"
+        [refresh]="refresh"
+        (eventClicked)="handleEvent('Clicked', $event.event)"
+        (eventTimesChanged)="eventTimesChanged($event)"
+      ></mwl-calendar-week-view>
+      <mwl-calendar-day-view
+        *ngSwitchCase="CalendarView.Day"
+        [viewDate]="viewDate"
+        [events]="events"
+        [refresh]="refresh"
+        (eventClicked)="handleEvent('Clicked', $event.event)"
+        (eventTimesChanged)="eventTimesChanged($event)"
+      ></mwl-calendar-day-view>
+    </div>
+
+    <!-- 使用 PrimeNG 的 p-dialog -->
+    <p-dialog
+      [(visible)]="displayModal"
+      [modal]="true"
+      [style]="{ width: '40vw', height: '90vh' }"
+      [header]="modalData.action || '編輯事件'"
+      [draggable]="false"
+    >
+      <ng-template pTemplate="body">
+        <div>
+          <label>標題:</label>
+          <input
+            type="text"
+            pInputText
+            [(ngModel)]="modalData.title"
+            class="form-control"
+          />
+        </div>
+
+        <div>
+          <label>開始時間:</label>
+          <p-calendar
+            *ngIf="modalData"
+            [ngModel]="modalData.start"
+            (ngModelChange)="modalData.start = $event"
+            [showTime]="true"
+            [hourFormat]="'12'"
+          />
+        </div>
+        <div>
+          <label>結束時間:</label>
+          <p-calendar
+            *ngIf="modalData"
+            [ngModel]="modalData.end"
+            (ngModelChange)="modalData.end = $event"
+            [showTime]="true"
+            [hourFormat]="'12'"
+          />
+        </div>
+      </ng-template>
+      <ng-template pTemplate="footer">
+        <button
+          type="button"
+          pButton
+          icon="pi pi-check"
+          label="OK"
+          (click)="updateEvent()"
+        ></button>
+        <button
+          type="button"
+          pButton
+          icon="pi pi-times"
+          label="取消"
+          (click)="displayModal = false"
+        ></button>
+      </ng-template>
+    </p-dialog>
+
+    <div class="col-12 flex justify-content-between align-items-center">
+      <h2>Edit events</h2>
+      <button pButton label="Add new" (click)="addEvent()"></button>
+    </div>
+
+    <div class="table-responsive">
+      <p-table [value]="events" class="col-12 table table-bordered">
+        <ng-template pTemplate="header">
+          <tr>
+            <th>Title</th>
+            <th>Primary color</th>
+            <th>Secondary + text color</th>
+            <th>Starts at</th>
+            <th>Ends at</th>
+            <th>Remove</th>
+          </tr>
+        </ng-template>
+
+        <ng-template pTemplate="body" let-event>
+          <tr>
+            <td>
+              <input
+                type="text"
+                class="form-control"
+                [(ngModel)]="event.title"
+                (keyup)="refresh.next()"
+              />
+            </td>
+            <td>
+              <input
+                *ngIf="event.color"
+                type="color"
+                [(ngModel)]="event.color.primary"
+                (change)="refresh.next()"
+              />
+            </td>
+            <td>
+              <div *ngIf="event.color">
+                <input
+                  type="color"
+                  [(ngModel)]="event.color.secondary"
+                  (change)="refresh.next()"
+                />
+                <input
+                  type="color"
+                  [ngModel]="event.color.secondaryText ?? '#1e90ff'"
+                  (ngModelChange)="event.color.secondaryText = $event"
+                  (change)="refresh.next()"
+                />
+              </div>
+            </td>
+            <td>
+              <p-calendar
+                inputId="calendar-12h-{{ event.id }} "
+                [(ngModel)]="event.start"
+                (ngModelChange)="refresh.next()"
+                [showTime]="true"
+                [hourFormat]="'12'"
+              />
+            </td>
+            <td>
+              <p-calendar
+                inputId="calendar-12h-end-{{ event.id }}"
+                [(ngModel)]="event.end"
+                (ngModelChange)="refresh.next()"
+                [showTime]="true"
+                [hourFormat]="'12'"
+              />
+            </td>
+            <td>
+              <button
+                pButton
+                icon="pi pi-times"
+                class="p-button-danger"
+                (click)="deleteEvent(event)"
+              >
+                Delete
+              </button>
+            </td>
+          </tr>
+        </ng-template>
+      </p-table>
+    </div>
+  </div>
+</div>

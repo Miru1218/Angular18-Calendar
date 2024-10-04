@@ -46,7 +46,7 @@ const colors: Record<string, EventColor> = {
 };
 
 @Component({
-  selector: 'app-event-crud-calendar',
+  selector: 'app-exclude-weekends',
   standalone: true,
   imports: [
     CommonModule,
@@ -58,10 +58,11 @@ const colors: Record<string, EventColor> = {
     AngularCalendarModule,
     PrimeNgCalendarModule
   ],
-  templateUrl: './event-crud-calendar.component.html',
-  styleUrl: './event-crud-calendar.component.scss'
+  templateUrl: './exclude-weekends.component.html',
+  styleUrl: './exclude-weekends.component.scss'
 })
-export class EventCRUDCalendarComponent {
+export class ExcludeWeekendsComponent {
+
   // 用於控制日曆顯示模式，這裡初始設定為 "Month"（月視圖）
   view: CalendarView = CalendarView.Month;
   // 套用CalendarView的設定
@@ -83,6 +84,9 @@ export class EventCRUDCalendarComponent {
   activeDayIsOpen: boolean = false;
   //更新日歷
   refresh = new Subject<void>();
+  // 0 代表星期日, 6 代表星期六
+  excludeDays: number[] = [0, 6];
+
 
   // 方法來檢查當前日期是否有事件
   checkForEventsOnActiveDay(): void {

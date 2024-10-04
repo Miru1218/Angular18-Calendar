@@ -31,7 +31,7 @@ export class LanguageSwitcherComponent {
   view: CalendarView = CalendarView.Month;
   // 套用CalendarView的設定
   CalendarView = CalendarView;
-  // 設定日曆的當前日期，預設為今天
+  // 設定日曆的當前日期，預設為Today
   viewDate: Date = new Date();
   // 切換日曆視圖到月、週、日
   setView(view: CalendarView) {

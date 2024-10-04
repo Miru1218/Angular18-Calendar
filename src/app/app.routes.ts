@@ -6,6 +6,8 @@ import { LanguageSwitcherComponent } from './features/language-switcher/language
 import { ModifyMonthStyleComponent } from './features/modify-month-style/modify-month-style.component';
 import { MonthNavigationComponent } from './features/month-navigation/month-navigation.component';
 import { ViewModeSwitcherComponent } from './features/view-mode-switcher/view-mode-switcher.component';
+import { ExcludeWeekendsComponent } from './features/exclude-weekends/exclude-weekends.component';
+import { DraggableExternalEventsComponent } from './features/draggable-external-events/draggable-external-events.component';
 
 export const routes: Routes = [
     { path: '', component: DefaultCalendarComponent },
@@ -15,4 +17,6 @@ export const routes: Routes = [
     { path: 'ViewModeSwitcher', component: ViewModeSwitcherComponent },
     { path: 'LanguageSwitcher', component: LanguageSwitcherComponent },
     { path: 'EventCRUDCalendar', component: EventCRUDCalendarComponent },
+    { path: 'ExcludeWeekends', component: ExcludeWeekendsComponent },
+    { path: 'DraggableExternalEvents', component: DraggableExternalEventsComponent },
 ];

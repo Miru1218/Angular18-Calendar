@@ -1,3 +1,15 @@
-<p-menubar [model]="items" class="m-5" />
+<p-menubar [model]="items" class="m-5">
+  <!-- <ng-template pTemplate="end">
+    <button pButton (click)="toggleLanguage()">
+      {{
+        locale === "zh-Hant"
+          ? "切換到法語"
+          : locale === "fr"
+          ? "切換到英文"
+          : "切換到繁體中文"
+      }}
+    </button>
+  </ng-template> -->
+</p-menubar>
 
 <router-outlet></router-outlet>

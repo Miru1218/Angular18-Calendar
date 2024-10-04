@@ -20,11 +20,13 @@ import {
 } from 'date-fns';
 import { ButtonModule } from 'primeng/button';
 import { CalendarModule as PrimeNgCalendarModule } from 'primeng/calendar';
+import { CardModule } from 'primeng/card';
 import { DialogModule } from 'primeng/dialog';
-import { InputTextModule } from 'primeng/inputtext';
 import { TableModule } from 'primeng/table';
+import { InputTextModule } from 'primeng/inputtext';
 import { Subject } from 'rxjs';
 import { ModalData } from '../../shared/models/shared-calendar-event.model';
+
 
 registerLocaleData(localeZhHant, 'zh-Hant');//繁體中文
 registerLocaleData(localeFr);//法語
@@ -44,9 +46,8 @@ const colors: Record<string, EventColor> = {
     secondary: '#FDF1BA',
   },
 };
-
 @Component({
-  selector: 'app-event-crud-calendar',
+  selector: 'app-draggable-external-events',
   standalone: true,
   imports: [
     CommonModule,
@@ -55,13 +56,14 @@ const colors: Record<string, EventColor> = {
     TableModule,
     FormsModule,
     InputTextModule,
+    CardModule,
     AngularCalendarModule,
     PrimeNgCalendarModule
   ],
-  templateUrl: './event-crud-calendar.component.html',
-  styleUrl: './event-crud-calendar.component.scss'
+  templateUrl: './draggable-external-events.component.html',
+  styleUrl: './draggable-external-events.component.scss'
 })
-export class EventCRUDCalendarComponent {
+export class DraggableExternalEventsComponent {
   // 用於控制日曆顯示模式，這裡初始設定為 "Month"（月視圖）
   view: CalendarView = CalendarView.Month;
   // 套用CalendarView的設定
@@ -210,6 +212,63 @@ export class EventCRUDCalendarComponent {
 
   deleteEvent(eventToDelete: CalendarEvent): void {
     this.events = this.events.filter((event) => event !== eventToDelete); // 刪除事件
+  }
+
+
+  // 外部可拖動的事件假資料
+  externalEvents: CalendarEvent[] = [
+    {
+      title: 'Event 1',
+      color: colors['yellow'],
+      start: new Date(),
+      draggable: true, // 支援拖曳
+    },
+    {
+      title: 'Event 2',
+      color: colors['blue'],
+      start: new Date(),
+      draggable: true, // 支援拖曳
+    },
+  ];
+
+  // 處理事件拖放到日曆中的情況
+  eventDropped({
+    event,
+    newStart,
+    newEnd,
+    allDay,
+  }: CalendarEventTimesChangedEvent): void {
+    const externalIndex = this.externalEvents.indexOf(event); // 查找該事件是否來自外部事件列表
+    if (typeof allDay !== 'undefined') {
+      event.allDay = allDay; // 如果事件是全天事件，則設置 allDay 屬性
+    }
+    if (externalIndex > -1) {
+      this.externalEvents.splice(externalIndex, 1); // 如果事件是外部事件，則從外部事件列表中刪除
+      this.events.push(event); // 並將事件添加到日曆中
+    }
+    event.start = newStart; // 更新事件開始時間
+    if (newEnd) {
+      event.end = newEnd; // 更新事件結束時間
+    }
+    if (this.view === 'month') {
+      this.viewDate = newStart; // 如果當前是月視圖，更新當前視圖日期
+      this.activeDayIsOpen = true; // 打開事件下方視窗
+    }
+    this.events = [...this.events]; // 更新事件
+  }
+
+  // 將事件從日曆中拖放回外部事件列表
+  externalDrop(event: CalendarEvent) {
+    if (this.externalEvents.indexOf(event) === -1) {
+      this.events = this.events.filter((iEvent) => iEvent !== event); // 從日曆中移除事件
+      this.externalEvents.push(event); // 添加到外部事件列表
+    }
+  }
+
+  // 處理事件時間改變
+  onEventTimesChanged(event: any): void {
+    this.eventTimesChanged(event); // 更新事件時間
+    this.eventDropped(event); // 處理事件的拖放
   }
 
 }
