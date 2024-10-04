@@ -1,8 +1,3 @@
-
-import localeFr from '@angular/common/locales/fr';
-import localeZhHant from '@angular/common/locales/zh-Hant';
-import localeEn from '@angular/common/locales/en';
-
 import { BreakpointObserver, BreakpointState } from '@angular/cdk/layout';
 import { ChangeDetectorRef, Component, OnDestroy, OnInit } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -40,6 +35,7 @@ import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { ModifyMonthStyleService } from './service/modify-month-style.service';
 import { ModalData } from '../../shared/models/shared-calendar-event.model';
+import { SharedCalendarEventService } from '../../shared/service/shared-calendar-event.service';
 
 const colors: Record<string, EventColor> = {
   red: {
@@ -55,10 +51,6 @@ const colors: Record<string, EventColor> = {
     secondary: '#FDF1BA',
   },
 };
-
-registerLocaleData(localeZhHant, 'zh-Hant');//繁體中文
-registerLocaleData(localeFr);//法語
-registerLocaleData(localeEn, 'en-US');//英文
 
 @Component({
   selector: 'app-modify-month-style',
@@ -80,7 +72,7 @@ registerLocaleData(localeEn, 'en-US');//英文
 export class ModifyMonthStyleComponent implements OnInit, OnDestroy {
   @ViewChild('modalContent', { static: true }) modalContent: TemplateRef<any> | undefined;
 
-  locale: string = 'zh-Hant';// 預設語言為繁體中文
+  locale: string = 'zh-Hant';
 
   displayModal: boolean = false;
 
@@ -127,7 +119,8 @@ export class ModifyMonthStyleComponent implements OnInit, OnDestroy {
   constructor(
     private breakpointObserver: BreakpointObserver,
     private cd: ChangeDetectorRef,
-    private modifyMonthStyleService: ModifyMonthStyleService
+    private modifyMonthStyleService: ModifyMonthStyleService,
+    private sharedCalendarEventService: SharedCalendarEventService
   ) { }
 
   ngOnInit() {
@@ -173,7 +166,7 @@ export class ModifyMonthStyleComponent implements OnInit, OnDestroy {
         }
         this.cd.markForCheck();
       });
-
+    this.onLocaleChange();
   }
 
   modalData: ModalData = {
@@ -251,20 +244,6 @@ export class ModifyMonthStyleComponent implements OnInit, OnDestroy {
     }
   }
 
-  //切換語言
-  toggleLanguage() {
-    if (this.locale === 'zh-Hant') {
-      this.locale = 'fr'; // 切換到法語
-      registerLocaleData(localeFr, 'fr');
-    } else if (this.locale === 'fr') {
-      this.locale = 'en-US'; // 切換到英文
-      registerLocaleData(localeEn, 'en-US');
-    } else {
-      this.locale = 'zh-Hant'; // 切換回繁體中文
-      registerLocaleData(localeZhHant, 'zh-Hant');
-    }
-  }
-
   deleteEvent(eventToDelete: CalendarEvent) {
     this.events = this.events.filter((event) => event !== eventToDelete);
   }
@@ -280,6 +259,12 @@ export class ModifyMonthStyleComponent implements OnInit, OnDestroy {
 
   ngOnDestroy() {
     this.destroy$.next();
+  }
+
+  onLocaleChange() {
+    this.sharedCalendarEventService.sessionItem$.subscribe(item => {
+      this.locale = item;
+    });
   }
 
 }

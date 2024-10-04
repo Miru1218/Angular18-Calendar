@@ -7,10 +7,12 @@ import { Router, RouterOutlet } from '@angular/router';
 import { MenuItem } from 'primeng/api';
 import { ButtonModule } from 'primeng/button';
 import { MenubarModule } from 'primeng/menubar';
+import { SharedCalendarEventService } from './shared/service/shared-calendar-event.service';
 
 registerLocaleData(localeZhHant, 'zh-Hant');//繁體中文
 registerLocaleData(localeFr);//法語
 registerLocaleData(localeEn, 'en-US');//英文
+
 @Component({
   selector: 'app-root',
   standalone: true,
@@ -24,9 +26,11 @@ registerLocaleData(localeEn, 'en-US');//英文
 })
 export class AppComponent {
   items: MenuItem[] | undefined;
-  // 預設語言為繁體中文
   locale: string = 'zh-Hant';
-  constructor(private router: Router) { }
+  constructor(
+    private router: Router,
+    private sharedCalendarEventService: SharedCalendarEventService
+  ) { }
   ngOnInit() {
     this.items = [
       {
@@ -77,13 +81,15 @@ export class AppComponent {
   toggleLanguage() {
     if (this.locale === 'zh-Hant') {
       this.locale = 'fr'; // 切換到法語
-      registerLocaleData(localeFr, 'fr');
+      registerLocaleData(localeFr); // 重新註冊法語
     } else if (this.locale === 'fr') {
       this.locale = 'en-US'; // 切換到英文
-      registerLocaleData(localeEn, 'en-US');
+      registerLocaleData(localeEn, 'en-US'); // 重新註冊英文
     } else {
       this.locale = 'zh-Hant'; // 切換回繁體中文
-      registerLocaleData(localeZhHant, 'zh-Hant');
+      registerLocaleData(localeZhHant, 'zh-Hant'); // 重新註冊繁體中文
     }
+    this.sharedCalendarEventService.setSessionItem('locale', this.locale); // 更新共享語言狀態
   }
+
 }
